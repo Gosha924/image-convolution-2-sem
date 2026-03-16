@@ -8,7 +8,7 @@ image = array(Image.open(get_image_path_for_read("image1.jpg")))
 
 grayscale = 0.3 * image[:, :, 0] + 0.6 * image[:, :, 1] + 0.1 * image[:, :, 2]
 
-kernel = kernels.blur_kernel()
+kernel = kernels.emboss_kernel()
 kernel = array(kernel, dtype=float64)
 kernel_height = len(kernel)
 kernel_half = kernel_height // 2
@@ -32,6 +32,7 @@ for y in range(height):
                 kernel_value = kernel[ky][kx]
                 pixel_sum += pixel_value * kernel_value
         result[y][x] = pixel_sum
+        result[y][x] += 128 # только для теснения
 
 result = clip(result, 0, 255)
 result = result.astype(uint8)
