@@ -8,8 +8,8 @@ image = array(Image.open(get_image_path_for_read("image1.jpg")))
 
 grayscale = 0.3 * image[:, :, 0] + 0.6 * image[:, :, 1] + 0.1 * image[:, :, 2]
 
-kernel = kernels.emboss_kernel()
-kernel = array(kernel, dtype=float64)
+kernel_list = kernels.emboss_kernel()
+kernel = array(kernel_list, dtype=float64)
 kernel_height: int = len(kernel)
 kernel_half: int = kernel_height // 2
 height: int = len(grayscale)
