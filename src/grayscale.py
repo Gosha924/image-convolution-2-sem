@@ -26,19 +26,17 @@ for y in range(height):
                 pixel_x = x + kx - kernel_half
                 pixel_y = y + ky - kernel_half
 
-                pixel_x, pixel_y = edge_processing.reflection_metod(pixel_x, pixel_y, width, height)
+                pixel_x, pixel_y = edge_processing.reflection_metod(
+                    pixel_x, pixel_y, width, height
+                )
 
                 pixel_value = grayscale[pixel_y][pixel_x]
                 kernel_value = kernel[ky][kx]
                 pixel_sum += pixel_value * kernel_value
         result[y][x] = pixel_sum
-        result[y][x] += 128 # только для теснения
+        result[y][x] += 128  # только для теснения
 
 result = clip(result, 0, 255)
 result = result.astype(uint8)
 gray_image = Image.fromarray(result)
 gray_image.save(get_image_path_for_save("output.jpg"))
-
-
-
-

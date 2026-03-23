@@ -1,4 +1,6 @@
-def reflection_metod(pixel_x: int, pixel_y: int, width: int, height: int) -> tuple[int, int]:
+def reflection_metod(
+    pixel_x: int, pixel_y: int, width: int, height: int
+) -> tuple[int, int]:
     """
     обработка края  при свёртке с помощью отражения
     """
