@@ -10,16 +10,16 @@ grayscale = 0.3 * image[:, :, 0] + 0.6 * image[:, :, 1] + 0.1 * image[:, :, 2]
 
 kernel = kernels.emboss_kernel()
 kernel = array(kernel, dtype=float64)
-kernel_height = len(kernel)
-kernel_half = kernel_height // 2
-height = len(grayscale)
-width = len(grayscale[1])
+kernel_height: int = len(kernel)
+kernel_half: int = kernel_height // 2
+height: int = len(grayscale)
+width: int = len(grayscale[1])
 print(height, width)
 result = zeros((height, width), dtype=float64)
 
 for y in range(height):
     for x in range(width):
-        pixel_sum = 0.0
+        pixel_sum: float = 0.0
         "итерируемся по ядру свертки"
         for ky in range(kernel_height):
             for kx in range(kernel_height):
