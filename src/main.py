@@ -8,6 +8,7 @@ from src.kernels import blur_kernel, emboss_kernel, sharpness_kernel
 "python main.py image1.jpg -o output2.jpg -k emboss"
 "python main.py image4.jpg -o output1.jpg -e zero"
 
+
 def get_image_path_for_read(image_name: str) -> Path:
     """
     Возвращает полный путь к изображению в папке images
@@ -29,11 +30,11 @@ def get_image_path_for_save(image_name: str) -> Path:
 
 
 def get_kernel(kernel_name: str) -> array:
-    if kernel_name == 'blur':
+    if kernel_name == "blur":
         kernel_list = blur_kernel
-    elif kernel_name == 'sharp':
+    elif kernel_name == "sharp":
         kernel_list = sharpness_kernel
-    elif kernel_name == 'emboss':
+    elif kernel_name == "emboss":
         kernel_list = emboss_kernel
     else:
         kernel_list = blur_kernel
@@ -41,7 +42,7 @@ def get_kernel(kernel_name: str) -> array:
     return array(kernel_list, dtype=float64)
 
 
-def apply_convolution(image: array, kernel: array, edge_mode: str = 'reflect') -> array:
+def apply_convolution(image: array, kernel: array, edge_mode: str = "reflect") -> array:
     """
     свертка grayscale изображения с заданным ядром
     """
@@ -60,33 +61,49 @@ def apply_convolution(image: array, kernel: array, edge_mode: str = 'reflect') -
                     px = x + kx - kernel_half
                     py = y + ky - kernel_half
 
-                    if edge_mode == 'reflect':
-                        px, py = edge_processing.reflection_method(px, py, width, height)
+                    if edge_mode == "reflect":
+                        px, py = edge_processing.reflection_method(
+                            px, py, width, height
+                        )
                         pixel_sum += image[py, px] * kernel[ky, kx]
-                    elif edge_mode == 'zero':
+                    elif edge_mode == "zero":
                         if 0 <= px < width and 0 <= py < height:
                             pixel_sum += image[py, px] * kernel[ky, kx]
             result[y, x] = pixel_sum
     return result
 
+
 def apply_emboss(result: array, kernel_name: str) -> array:
     """
     Если выбрано ядро emboss, прибавляет 128 к каждому пикселю.
     """
-    if kernel_name == 'emboss':
+    if kernel_name == "emboss":
         result = result + 128
     return result
 
 
 def main():
-    parser = ArgumentParser(description="Image convolution with kernel selection and edge processing")
+    parser = ArgumentParser(
+        description="Image convolution with kernel selection and edge processing"
+    )
     parser.add_argument("input", help="Input image from folder images")
-    parser.add_argument('--output', '-o', default='output.jpg',
-                        help='Output file (default output.jpg)')
-    parser.add_argument('--kernel', '-k', choices=['blur', 'sharp', 'emboss'],
-                        default='blur', help='Type kernel (blur, sharp, emboss)')
-    parser.add_argument('--edge', '-e', choices=['zero', 'reflect'],
-                        default='reflect', help='Method of processing the edges')
+    parser.add_argument(
+        "--output", "-o", default="output.jpg", help="Output file (default output.jpg)"
+    )
+    parser.add_argument(
+        "--kernel",
+        "-k",
+        choices=["blur", "sharp", "emboss"],
+        default="blur",
+        help="Type kernel (blur, sharp, emboss)",
+    )
+    parser.add_argument(
+        "--edge",
+        "-e",
+        choices=["zero", "reflect"],
+        default="reflect",
+        help="Method of processing the edges",
+    )
 
     args = parser.parse_args()
     image = array(Image.open(get_image_path_for_read(args.input)))
