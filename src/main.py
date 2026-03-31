@@ -2,11 +2,11 @@ from pathlib import Path
 from argparse import ArgumentParser
 from PIL import Image
 from numpy import ndarray, uint8, zeros, float64, clip, array
-import edge_processing
-from kernels import blur_kernel, emboss_kernel, sharpness_kernel
+from src import edge_processing
+from src.kernels import blur_kernel, emboss_kernel, sharpness_kernel
 
-"python main.py image1.jpg -o output2.jpg -k emboss"
-"python main.py image4.jpg -o output1.jpg -e zero"
+"python -m src.main image1.jpg -o output2.jpg -k emboss"
+"python -m src.main image1.jpg -o output1.jpg -e zero"
 
 
 def get_image_path_for_read(image_name: str) -> Path:
