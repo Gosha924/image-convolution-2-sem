@@ -1,13 +1,17 @@
-blur_kernel = [
+blur_kernel: list[list[float]] = [
     [1 / 9, 1 / 9, 1 / 9],
     [1 / 9, 1 / 9, 1 / 9],
     [1 / 9, 1 / 9, 1 / 9],
 ]
 
-sharpness_kernel = [
-    [0, -1, 0],
-    [-1, 5, -1],
-    [0, -1, 0],
+sharpness_kernel: list[list[float]] = [
+    [0.0, -1.0, 0.0],
+    [-1.0, 5.0, -1.0],
+    [0.0, -1.0, 0.0],
 ]
 
-emboss_kernel = [[-2, -1, 0], [-1, 1, 1], [0, 1, 2]]
+emboss_kernel: list[list[float]] = [
+    [-2.0, -1.0, 0.0],
+    [-1.0, 1.0, 1.0],
+    [0.0, 1.0, 2.0],
+]

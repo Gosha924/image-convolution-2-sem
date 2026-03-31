@@ -1,9 +1,9 @@
 from pathlib import Path
 from argparse import ArgumentParser
 from PIL import Image
-from numpy import array, uint8, zeros, float64, clip
-from src import edge_processing
-from src.kernels import blur_kernel, emboss_kernel, sharpness_kernel
+from numpy import ndarray, uint8, zeros, float64, clip, array
+import edge_processing
+from kernels import blur_kernel, emboss_kernel, sharpness_kernel
 
 "python main.py image1.jpg -o output2.jpg -k emboss"
 "python main.py image4.jpg -o output1.jpg -e zero"
@@ -29,7 +29,7 @@ def get_image_path_for_save(image_name: str) -> Path:
     return image_path
 
 
-def get_kernel(kernel_name: str) -> array:
+def get_kernel(kernel_name: str) -> ndarray:
     if kernel_name == "blur":
         kernel_list = blur_kernel
     elif kernel_name == "sharp":
@@ -42,7 +42,9 @@ def get_kernel(kernel_name: str) -> array:
     return array(kernel_list, dtype=float64)
 
 
-def apply_convolution(image: array, kernel: array, edge_mode: str = "reflect") -> array:
+def apply_convolution(
+    image: ndarray, kernel: ndarray, edge_mode: str = "reflect"
+) -> ndarray:
     """
     свертка grayscale изображения с заданным ядром
     """
@@ -73,7 +75,7 @@ def apply_convolution(image: array, kernel: array, edge_mode: str = "reflect") -
     return result
 
 
-def apply_emboss(result: array, kernel_name: str) -> array:
+def apply_emboss(result: ndarray, kernel_name: str) -> ndarray:
     """
     Если выбрано ядро emboss, прибавляет 128 к каждому пикселю.
     """
