@@ -25,6 +25,6 @@ def test_zero_padding_edge():
     kernel = np.ones((3, 3), dtype=np.float64) / 9.0
     result = apply_convolution(image, kernel, edge_mode="zero")
     # Центральный пиксель должен остаться 100
-    assert result[2, 2] == 100.0
+    assert abs(result[2, 2] - 100.0) < 1e-6
     # Угловой пиксель должен быть меньше из-за нулей
     assert result[0, 0] < 100.0
