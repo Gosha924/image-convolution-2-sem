@@ -1,5 +1,5 @@
-def reflection_metod(
-    pixel_x: int, pixel_y: int, width: int, height: int
+def reflection_method(
+        pixel_x: int, pixel_y: int, width: int, height: int
 ) -> tuple[int, int]:
     """
     обработка края  при свёртке с помощью отражения
@@ -12,4 +12,4 @@ def reflection_metod(
         pixel_y = -pixel_y
     elif pixel_y >= height:
         pixel_y = height - (pixel_y - height) - 1
-    return (pixel_x, pixel_y)
+    return pixel_x, pixel_y
