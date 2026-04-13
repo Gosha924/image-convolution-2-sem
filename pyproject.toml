@@ -1,0 +1,28 @@
+[project]
+name = "image-convolution"
+version = "0.1.0"
+description = "Image convolution with edge processing"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "pillow",
+]
+
+
+
+[tool.black]
+line-length = 88
+target-version = ['py312', 'py313']
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+# Если у вас есть папки, которые нужно исключить
+exclude = [".git", "__pycache__", ".venv"]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
