@@ -2,7 +2,6 @@ from pathlib import Path
 from argparse import ArgumentParser
 from PIL import Image
 from numpy import ndarray, uint8, zeros, float64, clip, array
-from src import edge_processing
 from src.kernels import blur_kernel, emboss_kernel, sharpness_kernel
 
 "python -m src.main image1.jpg -o output2.jpg -k emboss"
@@ -40,7 +39,6 @@ def get_kernel(kernel_name: str) -> ndarray:
         kernel_list = blur_kernel
 
     return array(kernel_list, dtype=float64)
-
 
 
 def apply_convolution(image: ndarray, kernel: ndarray, edge_mode: str = "reflect") -> ndarray:
@@ -81,6 +79,7 @@ def apply_convolution(image: ndarray, kernel: ndarray, edge_mode: str = "reflect
     else:
         raise ValueError(f"Unknown edge_mode: {edge_mode}")
     return result
+
 
 def apply_emboss(result: ndarray, kernel_name: str) -> ndarray:
     """
