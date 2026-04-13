@@ -28,7 +28,7 @@ jobs:
         run: uv run black --check --diff .
 
       - name: Lint with flake8
-        run: uv run flake8 . --exclude=.venv,.git,__pycache__,venv
+        run: uv run flake8 . --exclude=.venv,.git,__pycache__,venv  --max-line-length=99
 
       - name: Type check with mypy
         run: uv run mypy .
