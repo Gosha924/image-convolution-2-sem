@@ -42,34 +42,45 @@ def get_kernel(kernel_name: str) -> ndarray:
     return array(kernel_list, dtype=float64)
 
 
+
 def apply_convolution(image: ndarray, kernel: ndarray, edge_mode: str = "reflect") -> ndarray:
-    """
-    свертка grayscale изображения с заданным ядром
-    """
-    kernel_height: int = len(kernel)
-    kernel_half: int = kernel_height // 2
-    height: int = len(image)
-    width: int = len(image[1])
-    print(height, width)
-    result = zeros((height, width), dtype=float64)
+    kernel_h = kernel.shape[0]
+    kernel_half = kernel_h // 2
+    h, w = image.shape
+    result = zeros((h, w), dtype=float64)
+    if edge_mode == "reflect":
 
-    for y in range(height):
-        for x in range(width):
-            pixel_sum = 0.0
-            for ky in range(kernel_height):
-                for kx in range(kernel_height):
-                    px = x + kx - kernel_half
-                    py = y + ky - kernel_half
-
-                    if edge_mode == "reflect":
-                        px, py = edge_processing.reflection_method(px, py, width, height)
+        for y in range(h):
+            for x in range(w):
+                pixel_sum = 0.0
+                for ky in range(kernel_h):
+                    for kx in range(kernel_h):
+                        py = y + ky - kernel_half
+                        px = x + kx - kernel_half
+                        if px < 0:
+                            px = -px - 1
+                        elif px >= w:
+                            px = 2 * w - px - 1
+                        if py < 0:
+                            py = -py - 1
+                        elif py >= h:
+                            py = 2 * h - py - 1
                         pixel_sum += image[py, px] * kernel[ky, kx]
-                    elif edge_mode == "zero":
-                        if 0 <= px < width and 0 <= py < height:
+                result[y, x] = pixel_sum
+    elif edge_mode == "zero":
+        for y in range(h):
+            for x in range(w):
+                pixel_sum = 0.0
+                for ky in range(kernel_h):
+                    for kx in range(kernel_h):
+                        py = y + ky - kernel_half
+                        px = x + kx - kernel_half
+                        if 0 <= py < h and 0 <= px < w:
                             pixel_sum += image[py, px] * kernel[ky, kx]
-            result[y, x] = pixel_sum
+                result[y, x] = pixel_sum
+    else:
+        raise ValueError(f"Unknown edge_mode: {edge_mode}")
     return result
-
 
 def apply_emboss(result: ndarray, kernel_name: str) -> ndarray:
     """
