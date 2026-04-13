@@ -42,9 +42,7 @@ def get_kernel(kernel_name: str) -> ndarray:
     return array(kernel_list, dtype=float64)
 
 
-def apply_convolution(
-    image: ndarray, kernel: ndarray, edge_mode: str = "reflect"
-) -> ndarray:
+def apply_convolution(image: ndarray, kernel: ndarray, edge_mode: str = "reflect") -> ndarray:
     """
     свертка grayscale изображения с заданным ядром
     """
@@ -64,9 +62,7 @@ def apply_convolution(
                     py = y + ky - kernel_half
 
                     if edge_mode == "reflect":
-                        px, py = edge_processing.reflection_method(
-                            px, py, width, height
-                        )
+                        px, py = edge_processing.reflection_method(px, py, width, height)
                         pixel_sum += image[py, px] * kernel[ky, kx]
                     elif edge_mode == "zero":
                         if 0 <= px < width and 0 <= py < height:
