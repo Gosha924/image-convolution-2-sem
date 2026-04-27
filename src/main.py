@@ -1,7 +1,7 @@
 from pathlib import Path
 from argparse import ArgumentParser
 from PIL import Image
-from numpy import ndarray, uint8, zeros, float64, clip, array, zeros_like, round
+from numpy import ndarray, uint8, zeros, float64, clip, array, zeros_like
 from src.kernels import (
     blur_kernel,
     emboss_kernel,
