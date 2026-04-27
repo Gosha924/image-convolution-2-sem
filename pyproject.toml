@@ -1,0 +1,41 @@
+[project]
+name = "image-convolution"
+version = "0.1.0"
+description = "Image convolution with edge processing"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "numpy",
+    "pillow",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "flake8==7.0.0",
+    "mypy==1.9.0",
+    "pytest==9.0.2",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.black]
+line-length = 99
+target-version = ['py312']
+
+[tool.flake8]
+max-line-length = 99
+extend-ignore = ["E203", "W503"]
+exclude = ".git,__pycache__,venv,.venv"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
