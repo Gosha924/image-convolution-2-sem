@@ -37,6 +37,8 @@ def get_kernel(kernel_name: str) -> ndarray:
         kernel_list = sharpness_kernel
     elif kernel_name == "emboss":
         kernel_list = emboss_kernel
+    elif kernel_name == "gaussian_blur":
+        kernel_list = gaussian_blur
     else:
         kernel_list = blur_kernel
 
