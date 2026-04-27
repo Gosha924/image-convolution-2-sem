@@ -1,12 +1,13 @@
 from pathlib import Path
 from argparse import ArgumentParser
 from PIL import Image
-from numpy import ndarray, uint8, zeros, float64, clip, array
-from src.kernels import blur_kernel, emboss_kernel, sharpness_kernel
+from numpy import ndarray, uint8, zeros, float64, clip, array, zeros_like
+from src.kernels import blur_kernel, emboss_kernel, sharpness_kernel, gaussian_blur
 from src.edge_processing import reflection_method, zero_method, extend_method, wrap_method
 
 "python -m src.main image1.jpg -o output2.jpg -k emboss"
 "python -m src.main image1.jpg -o output1.jpg -e zero"
+"python -m src.main image1.jpg -o output3.jpg -k gaussian_blur -c"
 
 
 def get_image_path_for_read(image_name: str) -> Path:
@@ -83,6 +84,17 @@ def apply_emboss(result: ndarray, kernel_name: str) -> ndarray:
     return result
 
 
+def apply_convolution_rgb(image: ndarray, kernel: ndarray, edge_mode: str = "reflect") -> ndarray:
+    """
+    Применяет свёртку ко всем трём каналам RGB-изображения
+    """
+    height, width, c = image.shape
+    result = zeros_like(image)
+    for channel in range(c):
+        result[:, :, channel] = apply_convolution(image[:, :, channel], kernel, edge_mode)
+    return result
+
+
 def main():
     parser = ArgumentParser(
         description="Image convolution with kernel selection and edge processing"
@@ -94,26 +106,33 @@ def main():
     parser.add_argument(
         "--kernel",
         "-k",
-        choices=["blur", "sharp", "emboss"],
+        choices=["blur", "sharp", "emboss", "gaussian_blur"],
         default="blur",
         help="Type kernel (blur, sharp, emboss)",
     )
     parser.add_argument(
         "--edge",
         "-e",
-        choices=["zero", "reflect"],
+        choices=["zero", "reflect", "extend", "wrap"],
         default="reflect",
         help="Method of processing the edges",
     )
-
+    parser.add_argument(
+        "--color", "-c", action="store_true", help="Process RGB image (keep colors)"
+    )
     args = parser.parse_args()
-    image = array(Image.open(get_image_path_for_read(args.input)))
-
-    grayscale = 0.299 * image[:, :, 0] + 0.587 * image[:, :, 1] + 0.114 * image[:, :, 2]
-
+    image = array(Image.open(get_image_path_for_read(args.input)), dtype=float64)
     kernel = get_kernel(args.kernel)
-    result = apply_convolution(grayscale, kernel, edge_mode=args.edge)
-    result = apply_emboss(result, args.kernel)
+    if args.color and image.ndim == 3 and image.shape[2] == 3:
+        # Свертка RGB изображения
+        result = apply_convolution_rgb(image, kernel, edge_mode=args.edge)
+        result = apply_emboss(result, args.kernel)
+    else:
+        if image.ndim == 3:
+            grayscale = 0.299 * image[:, :, 0] + 0.587 * image[:, :, 1] + 0.114 * image[:, :, 2]
+        else:
+            grayscale = image
+        result = apply_convolution(grayscale, kernel, edge_mode=args.edge)
 
     result = clip(result, 0, 255)
     result = result.astype(uint8)
