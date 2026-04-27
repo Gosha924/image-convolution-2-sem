@@ -31,10 +31,12 @@ KERNELS = {
 
 BORDER_MODES = ["zero", "reflect", "extend"]
 
+
 @pytest.fixture(scope="module")
 def input_image():
     img = Image.open(TEST_IMAGE_PATH).convert("RGB")
     return np.array(img, dtype=np.float64)
+
 
 def test_grayscale_convolution(input_image):
     gray = rgb_to_grayscale(input_image)
@@ -47,7 +49,10 @@ def test_grayscale_convolution(input_image):
             result = np.clip(result, 0, 255).astype(np.uint8)
             golden_path = os.path.join(GOLDEN_DIR, f"{kernel_name}_{mode}_gray.png")
             golden = np.array(Image.open(golden_path))
-            np.testing.assert_allclose(result, golden, atol=1, err_msg=f"{kernel_name}_{mode}_gray")
+            np.testing.assert_allclose(
+                result, golden, atol=1, err_msg=f"{kernel_name}_{mode}_gray"
+            )
+
 
 def test_rgb_convolution(input_image):
     for kernel_name, kernel_list in KERNELS.items():
@@ -59,4 +64,6 @@ def test_rgb_convolution(input_image):
             result = np.clip(result, 0, 255).astype(np.uint8)
             golden_path = os.path.join(GOLDEN_DIR, f"{kernel_name}_{mode}_color.png")
             golden = np.array(Image.open(golden_path))
-            np.testing.assert_allclose(result, golden, atol=1, err_msg=f"{kernel_name}_{mode}_color")
+            np.testing.assert_allclose(
+                result, golden, atol=1, err_msg=f"{kernel_name}_{mode}_color"
+            )

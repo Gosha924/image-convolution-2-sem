@@ -116,7 +116,7 @@ def apply_convolution_rgb(image: ndarray, kernel: ndarray, edge_mode: str = "ref
 
 
 def rgb_to_grayscale(image: ndarray) -> ndarray:
-     return 0.299 * image[:, :, 0] + 0.587 * image[:, :, 1] + 0.114 * image[:, :, 2]
+    return 0.299 * image[:, :, 0] + 0.587 * image[:, :, 1] + 0.114 * image[:, :, 2]
 
 
 def main():
