@@ -2,12 +2,22 @@ from pathlib import Path
 from argparse import ArgumentParser
 from PIL import Image
 from numpy import ndarray, uint8, zeros, float64, clip, array, zeros_like
-from src.kernels import blur_kernel, emboss_kernel, sharpness_kernel, gaussian_blur
+from src.kernels import (
+    blur_kernel,
+    emboss_kernel,
+    sharpness_kernel,
+    gaussian_blur,
+    gaussian_blur_5x5,
+    highlighting_vertical_borders,
+    highlighting_horizontal_borders,
+    box_blur_5x5,
+)
 from src.edge_processing import reflection_method, zero_method, extend_method, wrap_method
 
 "python -m src.main image1.jpg -o output2.jpg -k emboss"
 "python -m src.main image1.jpg -o output1.jpg -e zero"
 "python -m src.main image1.jpg -o output3.jpg -k gaussian_blur -c"
+"python -m src.main image1.jpg -o output4.jpg -k highlighting_horizontal_borders -c"
 
 
 def get_image_path_for_read(image_name: str) -> Path:
@@ -39,6 +49,14 @@ def get_kernel(kernel_name: str) -> ndarray:
         kernel_list = emboss_kernel
     elif kernel_name == "gaussian_blur":
         kernel_list = gaussian_blur
+    elif kernel_name == "gaussian_blur_5x5":
+        kernel_list = gaussian_blur_5x5
+    elif kernel_name == "highlighting_vertical_borders":
+        kernel_list = highlighting_vertical_borders
+    elif kernel_name == "highlighting_horizontal_borders":
+        kernel_list = highlighting_horizontal_borders
+    elif kernel_name == "box_blur_5x5":
+        kernel_list = box_blur_5x5
     else:
         kernel_list = blur_kernel
 
@@ -108,7 +126,16 @@ def main():
     parser.add_argument(
         "--kernel",
         "-k",
-        choices=["blur", "sharp", "emboss", "gaussian_blur"],
+        choices=[
+            "blur",
+            "sharp",
+            "emboss",
+            "gaussian_blur",
+            "highlighting_horizontal_borders",
+            "box_blur_5x5",
+            "highlighting_vertical_borders",
+            "gaussian_blur_5x5",
+        ],
         default="blur",
         help="Type kernel (blur, sharp, emboss)",
     )
