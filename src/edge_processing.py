@@ -3,13 +3,13 @@ def reflection_method(pixel_x: int, pixel_y: int, width: int, height: int) -> tu
     обработка края  при свёртке с помощью отражения
     """
     if pixel_x < 0:
-        pixel_x = -pixel_x
+        pixel_x = -pixel_x - 1
     elif pixel_x >= width:
-        pixel_x = width - (pixel_x - width) - 1
+        pixel_x = 2 * width - pixel_x - 1
     if pixel_y < 0:
-        pixel_y = -pixel_y
+        pixel_y = -pixel_y - 1
     elif pixel_y >= height:
-        pixel_y = height - (pixel_y - height) - 1
+        pixel_y = 2 * height - pixel_y - 1
     return pixel_x, pixel_y
 
 
@@ -34,4 +34,4 @@ def wrap_method(pixel_x: int, pixel_y: int, width: int, height: int) -> tuple[in
     """
     pixel_x = pixel_x % width
     pixel_y = pixel_y % height
-    return pixel_y, pixel_x
+    return pixel_x, pixel_y

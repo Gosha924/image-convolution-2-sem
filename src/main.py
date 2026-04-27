@@ -1,7 +1,7 @@
 from pathlib import Path
 from argparse import ArgumentParser
 from PIL import Image
-from numpy import ndarray, uint8, zeros, float64, clip, array, zeros_like
+from numpy import ndarray, uint8, zeros, float64, clip, array, zeros_like, round
 from src.kernels import (
     blur_kernel,
     emboss_kernel,
@@ -14,10 +14,10 @@ from src.kernels import (
 )
 from src.edge_processing import reflection_method, zero_method, extend_method, wrap_method
 
-"python -m src.main image1.jpg -o output2.jpg -k emboss"
-"python -m src.main image1.jpg -o output1.jpg -e zero"
-"python -m src.main image1.jpg -o output3.jpg -k gaussian_blur -c"
-"python -m src.main image1.jpg -o output4.jpg -k highlighting_horizontal_borders -c"
+"python -m src.main image1.png -o output2.png -k emboss"
+"python -m src.main image1.png -o output1.png -e zero"
+"python -m src.main image1.png -o output3.png -k gaussian_blur -c"
+"python -m src.main image1.png -o output4.png -k highlighting_horizontal_borders -c"
 
 
 def get_image_path_for_read(image_name: str) -> Path:
@@ -115,6 +115,10 @@ def apply_convolution_rgb(image: ndarray, kernel: ndarray, edge_mode: str = "ref
     return result
 
 
+def rgb_to_grayscale(image: ndarray) -> ndarray:
+     return 0.299 * image[:, :, 0] + 0.587 * image[:, :, 1] + 0.114 * image[:, :, 2]
+
+
 def main():
     parser = ArgumentParser(
         description="Image convolution with kernel selection and edge processing"
@@ -158,7 +162,7 @@ def main():
         result = apply_emboss(result, args.kernel)
     else:
         if image.ndim == 3:
-            grayscale = 0.299 * image[:, :, 0] + 0.587 * image[:, :, 1] + 0.114 * image[:, :, 2]
+            grayscale = rgb_to_grayscale(image)
         else:
             grayscale = image
         result = apply_convolution(grayscale, kernel, edge_mode=args.edge)
