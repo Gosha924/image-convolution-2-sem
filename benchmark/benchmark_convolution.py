@@ -8,9 +8,14 @@ import cv2
 import csv
 from src.main import apply_convolution, apply_convolution_rgb
 from src.kernels import (
-    blur_kernel, emboss_kernel, sharpness_kernel,
-    gaussian_blur, highlighting_vertical_borders, highlighting_horizontal_borders,
-    box_blur_5x5, gaussian_blur_5x5,
+    blur_kernel,
+    emboss_kernel,
+    sharpness_kernel,
+    gaussian_blur,
+    highlighting_vertical_borders,
+    highlighting_horizontal_borders,
+    box_blur_5x5,
+    gaussian_blur_5x5,
 )
 
 SIZES = [128, 256, 512]
@@ -42,9 +47,11 @@ TEST_COMBOS = [
     ("blur_3x3", "zero", "rgb"),
 ]
 
+
 def get_kernel_array(kernel_name):
     kernel_list = KERNEL_FUNCS[kernel_name]
     return np.array(kernel_list, dtype=np.float32)
+
 
 def measure_time(func, *args, runs=NUM_RUNS, warmup=WARMUP):
     """Измеряет среднее время выполнения функции (в миллисекундах)."""
@@ -58,13 +65,16 @@ def measure_time(func, *args, runs=NUM_RUNS, warmup=WARMUP):
         times.append((end - start) * 1000)
     return np.mean(times), np.std(times)
 
+
 def my_grayscale_convolution(image, kernel_name, edge_mode):
     kernel = get_kernel_array(kernel_name)
     return apply_convolution(image, kernel, edge_mode)
 
+
 def my_rgb_convolution(image, kernel_name, edge_mode):
     kernel = get_kernel_array(kernel_name)
     return apply_convolution_rgb(image, kernel, edge_mode)
+
 
 def opencv_grayscale_convolution(image, kernel_name, edge_mode):
     kernel = get_kernel_array(kernel_name)
@@ -72,6 +82,7 @@ def opencv_grayscale_convolution(image, kernel_name, edge_mode):
     if border == cv2.BORDER_WRAP:
         raise ValueError("OpenCV filter2D does not support BORDER_WRAP")
     return cv2.filter2D(image, -1, kernel, borderType=border)
+
 
 def opencv_rgb_convolution(image, kernel_name, edge_mode):
     kernel = get_kernel_array(kernel_name)
@@ -126,23 +137,27 @@ def run_benchmark(output_dir="benchmark_results"):
                 my_mean, my_std = measure_time(my_func)
                 cv_mean, cv_std = measure_time(cv_func)
                 speedup = my_mean / cv_mean
-                results.append({
-                    "size": size,
-                    "kernel": kernel_name,
-                    "edge_mode": edge_mode,
-                    "image_type": img_type,
-                    "my_mean_ms": my_mean,
-                    "my_std_ms": my_std,
-                    "cv_mean_ms": cv_mean,
-                    "cv_std_ms": cv_std,
-                    "speedup": speedup,
-                })
-                print(f"My: {my_mean:.2f} ± {my_std:.2f} ms, OpenCV: {cv_mean:.2f} ± {cv_std:.2f} ms, Speedup: {speedup:.1f}x")
+                results.append(
+                    {
+                        "size": size,
+                        "kernel": kernel_name,
+                        "edge_mode": edge_mode,
+                        "image_type": img_type,
+                        "my_mean_ms": my_mean,
+                        "my_std_ms": my_std,
+                        "cv_mean_ms": cv_mean,
+                        "cv_std_ms": cv_std,
+                        "speedup": speedup,
+                    }
+                )
+                print(
+                    f"My: {my_mean:.2f} ± {my_std:.2f} ms, OpenCV: {cv_mean:.2f} ± {cv_std:.2f} ms, Speedup: {speedup:.1f}x"
+                )
             except Exception as e:
                 print(f"ERROR: {e}")
 
     if results:
-        with open(out_dir / "benchmark_results.csv", "w", newline="") as f:
+        with open(out_dir / "benchmark_res.csv", "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=results[0].keys())
             writer.writeheader()
             writer.writerows(results)

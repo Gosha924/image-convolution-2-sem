@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from collections import defaultdict
 
+"python -m benchmark.visualization"
 
-'python -m benchmark.visualization'
+
 def load_results():
     """Загружает JSON с результатами."""
     results_path = Path("benchmark_results/benchmark_results.json")
@@ -14,12 +15,15 @@ def load_results():
     with open(results_path, "r") as f:
         return json.load(f)
 
+
 def plot_results(results):
     """Строит графики сравнения производительности."""
     out_dir = Path("benchmark_results")
     out_dir.mkdir(exist_ok=True)
 
-    grouped = defaultdict(lambda: {"sizes": [], "my_mean": [], "my_std": [], "cv_mean": [], "cv_std": []})
+    grouped = defaultdict(
+        lambda: {"sizes": [], "my_mean": [], "my_std": [], "cv_mean": [], "cv_std": []}
+    )
     for r in results:
         key = (r["kernel"], r["edge_mode"], r["image_type"])
         grouped[key]["sizes"].append(r["size"])
@@ -45,10 +49,26 @@ def plot_results(results):
     for ax, (key, data) in zip(axes, grouped.items()):
         kernel, edge, img_type = key
         sizes = data["sizes"]
-        ax.errorbar(sizes, data["my_mean"], yerr=data["my_std"],
-                    label="Educational (Python)", marker='o', capsize=5, linestyle='-', linewidth=2)
-        ax.errorbar(sizes, data["cv_mean"], yerr=data["cv_std"],
-                    label="OpenCV (C++)", marker='s', capsize=5, linestyle='--', linewidth=2)
+        ax.errorbar(
+            sizes,
+            data["my_mean"],
+            yerr=data["my_std"],
+            label="Educational (Python)",
+            marker="o",
+            capsize=5,
+            linestyle="-",
+            linewidth=2,
+        )
+        ax.errorbar(
+            sizes,
+            data["cv_mean"],
+            yerr=data["cv_std"],
+            label="OpenCV (C++)",
+            marker="s",
+            capsize=5,
+            linestyle="--",
+            linewidth=2,
+        )
         ax.set_xscale("log", base=2)
         ax.set_yscale("log")
         ax.set_xlabel("Image size (pixels)")
@@ -58,13 +78,14 @@ def plot_results(results):
         ax.grid(True, which="both", linestyle="--", alpha=0.6)
 
     for i in range(len(axes) - n_plots):
-        axes[-i-1].set_visible(False)
+        axes[-i - 1].set_visible(False)
 
     plt.suptitle("Performance comparison: Educational vs OpenCV", fontsize=14)
     plt.tight_layout()
     plt.savefig(out_dir / "benchmark_result.png", dpi=150)
     plt.show()
     print(f"Графики сохранены в {out_dir / 'benchmark_result.png'}")
+
 
 def print_summary_table(results):
     """Выводит таблицу ускорений для ключевых размеров."""
@@ -91,6 +112,7 @@ def print_summary_table(results):
             row.append(f"{sp:>8.1f}x" if sp else "N/A")
         print(f"{row[0]:<40}", " ".join(row[1:]))
 
+
 def main():
     results = load_results()
     if results:
@@ -98,6 +120,7 @@ def main():
         print_summary_table(results)
     else:
         print("Нет данных для визуализации.")
+
 
 if __name__ == "__main__":
     main()
