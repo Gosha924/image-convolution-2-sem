@@ -42,6 +42,12 @@
   pytest tests/test_convolution.py -v
 ```
 
+# Запуск бенчмарков
+```bash
+  python -m benchmark.run-benchmark
+  python -m benchmark.visualization
+```
+
 # Лицензия изображений
 
 #### Все тестовые изображения взяты с сайта https://www.rupixel.ru/. Согласно информации на сайте, все фотографии являются общественным достоянием (Public Domain).
