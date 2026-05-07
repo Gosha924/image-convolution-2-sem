@@ -62,9 +62,9 @@ def plot_results(results):
 
     plt.suptitle("Performance comparison: Educational vs OpenCV", fontsize=14)
     plt.tight_layout()
-    plt.savefig(out_dir / "benchmark_graphs.png", dpi=150)
+    plt.savefig(out_dir / "benchmark_result.png", dpi=150)
     plt.show()
-    print(f"Графики сохранены в {out_dir / 'benchmark_graphs.png'}")
+    print(f"Графики сохранены в {out_dir / 'benchmark_result.png'}")
 
 def print_summary_table(results):
     """Выводит таблицу ускорений для ключевых размеров."""
