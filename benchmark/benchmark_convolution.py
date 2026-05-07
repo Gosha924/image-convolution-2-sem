@@ -127,11 +127,20 @@ def run_benchmark(output_dir="benchmark_results"):
             print(f"Testing: {kernel_name} | {edge_mode} | {img_type}")
 
             if img_type == "grayscale":
-                my_func = lambda: my_grayscale_convolution(gray_img, kernel_name, edge_mode)
-                cv_func = lambda: opencv_grayscale_convolution(gray_img, kernel_name, edge_mode)
+
+                def my_func():
+                    return my_grayscale_convolution(gray_img, kernel_name, edge_mode)
+
+                def cv_func():
+                    return opencv_grayscale_convolution(gray_img, kernel_name, edge_mode)
+
             else:
-                my_func = lambda: my_rgb_convolution(rgb_img, kernel_name, edge_mode)
-                cv_func = lambda: opencv_rgb_convolution(rgb_img, kernel_name, edge_mode)
+
+                def my_func():
+                    return my_rgb_convolution(rgb_img, kernel_name, edge_mode)
+
+                def cv_func():
+                    return opencv_rgb_convolution(rgb_img, kernel_name, edge_mode)
 
             try:
                 my_mean, my_std = measure_time(my_func)
@@ -151,7 +160,9 @@ def run_benchmark(output_dir="benchmark_results"):
                     }
                 )
                 print(
-                    f"My: {my_mean:.2f} ± {my_std:.2f} ms, OpenCV: {cv_mean:.2f} ± {cv_std:.2f} ms, Speedup: {speedup:.1f}x"
+                    f"My: {my_mean:.2f} ± {my_std:.2f} ms, "
+                    f"OpenCV: {cv_mean:.2f} ± {cv_std:.2f} ms, "
+                    f"Speedup: {speedup:.1f}x"
                 )
             except Exception as e:
                 print(f"ERROR: {e}")
@@ -167,3 +178,7 @@ def run_benchmark(output_dir="benchmark_results"):
     else:
         print("Нет результатов для сохранения")
     return results
+
+
+if __name__ == "__main__":
+    run_benchmark()
