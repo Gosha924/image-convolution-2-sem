@@ -139,7 +139,8 @@ def run_benchmark():
                     }
                 )
                 print(
-                    f"My: {my_mean:.2f} ± {my_std:.2f} ms, OpenCV: {cv_mean:.2f} ± {cv_std:.2f} ms, Speedup: {speedup:.1f}x"
+                    f"My: {my_mean:.2f} ± {my_std:.2f} ms, OpenCV:"
+                    f" {cv_mean:.2f} ± {cv_std:.2f} ms, Speedup: {speedup:.1f}x"
                 )
             except Exception as e:
                 print(f"ERROR: {e}")
