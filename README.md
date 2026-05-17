@@ -30,10 +30,10 @@
 
 # 🚀 Запуск
 ```bash
-    python -m src.main image1.png -o output2.png -k emboss
-    python -m src.main image1.png -o output1.png -e zero
-    python -m src.main image1.png -o output3.png -k gaussian_blur -c
-    python -m src.main image1.png -o output4.png -k highlighting_horizontal_borders -c
+uv run python -m src.main image1.png -o output2.png -k emboss
+uv run python -m src.main image1.png -o output1.png -e zero
+uv run python -m src.main image1.png -o output3.png -k gaussian_blur -c
+uv run python -m src.main image1.png -o output4.png -k highlighting_horizontal_borders -c
     
 ```
 
@@ -44,8 +44,9 @@
 
 # Запуск бенчмарков
 ```bash
-  python -m benchmark.run-benchmark
-  python -m benchmark.visualization
+uv run python benchmark/benchmark_convolution.py
+# построение графика
+uv run python benchmark/visualization.py
 ```
 
 # Лицензия изображений

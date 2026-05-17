@@ -1,11 +1,8 @@
-import json
 import time
-import platform
-import psutil
+import json
 from pathlib import Path
 import numpy as np
 import cv2
-import csv
 from src.main import apply_convolution, apply_convolution_rgb
 from src.kernels import (
     blur_kernel,
@@ -18,7 +15,7 @@ from src.kernels import (
     gaussian_blur_5x5,
 )
 
-SIZES = [128, 256, 512]
+SIZES = [128, 256, 512, 1024, 2048]
 NUM_RUNS = 5
 WARMUP = 2
 
@@ -54,7 +51,6 @@ def get_kernel_array(kernel_name):
 
 
 def measure_time(func, *args, runs=NUM_RUNS, warmup=WARMUP):
-    """Измеряет среднее время выполнения функции (в миллисекундах)."""
     for _ in range(warmup):
         func(*args)
     times = []
@@ -92,26 +88,9 @@ def opencv_rgb_convolution(image, kernel_name, edge_mode):
     return cv2.filter2D(image, -1, kernel, borderType=border)
 
 
-def run_benchmark(output_dir="benchmark_results"):
-    """
-    Запускает бенчмарк и сохраняет результаты в указанную папку.
-    Возвращает список результатов.
-    """
-    out_dir = Path(output_dir)
+def run_benchmark():
+    out_dir = Path("benchmark_results")
     out_dir.mkdir(exist_ok=True)
-
-    system_info = {
-        "platform": platform.platform(),
-        "processor": platform.processor(),
-        "python_version": platform.python_version(),
-        "cpu_count_logical": psutil.cpu_count(logical=True),
-        "cpu_count_physical": psutil.cpu_count(logical=False),
-        "ram_gb": psutil.virtual_memory().total / (1024**3),
-        "opencv_version": cv2.__version__,
-        "numpy_version": np.__version__,
-    }
-    with open(out_dir / "system_info.json", "w") as f:
-        json.dump(system_info, f, indent=2)
 
     results = []
     np.random.seed(42)
@@ -160,25 +139,18 @@ def run_benchmark(output_dir="benchmark_results"):
                     }
                 )
                 print(
-                    f"My: {my_mean:.2f} ± {my_std:.2f} ms, "
-                    f"OpenCV: {cv_mean:.2f} ± {cv_std:.2f} ms, "
-                    f"Speedup: {speedup:.1f}x"
+                    f"My: {my_mean:.2f} ± {my_std:.2f} ms, OpenCV: {cv_mean:.2f} ± {cv_std:.2f} ms, Speedup: {speedup:.1f}x"
                 )
             except Exception as e:
                 print(f"ERROR: {e}")
 
-    if results:
-        with open(out_dir / "benchmark_res.csv", "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=results[0].keys())
-            writer.writeheader()
-            writer.writerows(results)
-        with open(out_dir / "benchmark_results.json", "w") as f:
-            json.dump(results, f, indent=2)
-        print(f"\nРезультаты сохранены в {out_dir}")
-    else:
-        print("Нет результатов для сохранения")
+    with open(out_dir / "benchmark_results.json", "w") as f:
+        json.dump(results, f, indent=2)
+
+    print(f"\nРезультаты сохранены в {out_dir / 'benchmark_results.json'}")
     return results
 
 
 if __name__ == "__main__":
+    print("Запуск бенчмарка свёртки...")
     run_benchmark()

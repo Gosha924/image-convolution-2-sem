@@ -69,8 +69,6 @@ def plot_results(results):
             linestyle="--",
             linewidth=2,
         )
-        ax.set_xscale("log", base=2)
-        ax.set_yscale("log")
         ax.set_xlabel("Image size (pixels)")
         ax.set_ylabel("Time (ms)")
         ax.set_title(f"{kernel}\n{edge} | {img_type}")
