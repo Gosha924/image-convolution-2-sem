@@ -4,11 +4,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from collections import defaultdict
 
-"python -m benchmark.visualization"
-
 
 def load_results():
-    """Загружает JSON с результатами."""
     results_path = Path("benchmark_results/benchmark_results.json")
     if not results_path.exists():
         raise FileNotFoundError("Результаты не найдены. Сначала запустите run_benchmark.py")
@@ -17,9 +14,10 @@ def load_results():
 
 
 def plot_results(results):
-    """Строит графики сравнения производительности."""
     out_dir = Path("benchmark_results")
     out_dir.mkdir(exist_ok=True)
+    all_sizes = sorted(set(r["size"] for r in results))
+    size_labels = [str(s) for s in all_sizes]
 
     grouped = defaultdict(
         lambda: {"sizes": [], "my_mean": [], "my_std": [], "cv_mean": [], "cv_std": []}
@@ -31,7 +29,6 @@ def plot_results(results):
         grouped[key]["my_std"].append(r["my_std_ms"])
         grouped[key]["cv_mean"].append(r["cv_mean_ms"])
         grouped[key]["cv_std"].append(r["cv_std_ms"])
-
     for key in grouped:
         indices = np.argsort(grouped[key]["sizes"])
         for field in ["sizes", "my_mean", "my_std", "cv_mean", "cv_std"]:
@@ -69,6 +66,8 @@ def plot_results(results):
             linestyle="--",
             linewidth=2,
         )
+        ax.set_xticks(all_sizes)
+        ax.set_xticklabels(size_labels)
         ax.set_xlabel("Image size (pixels)")
         ax.set_ylabel("Time (ms)")
         ax.set_title(f"{kernel}\n{edge} | {img_type}")
@@ -82,11 +81,10 @@ def plot_results(results):
     plt.tight_layout()
     plt.savefig(out_dir / "benchmark_result.png", dpi=150)
     plt.show()
-    print(f"Графики сохранены в {out_dir / 'benchmark_result.png'}")
+    print(f"График сохранён в {out_dir / 'benchmark_result.png'}")
 
 
 def print_summary_table(results):
-    """Выводит таблицу ускорений для ключевых размеров."""
     speeds = {}
     for r in results:
         key = (r["kernel"], r["edge_mode"], r["image_type"], r["size"])
@@ -96,7 +94,6 @@ def print_summary_table(results):
     sizes = sorted(set(r["size"] for r in results))
     combos = sorted(set((r["kernel"], r["edge_mode"], r["image_type"]) for r in results))
 
-    # Заголовок
     header = ["Combination"] + [f"{s}x{s}" for s in sizes]
     print(f"{header[0]:<40}", " ".join(f"{h:>10}" for h in header[1:]))
     print("-" * 90)
